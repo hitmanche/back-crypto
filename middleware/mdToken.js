@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["x-token"];
-  if (!authHeader) return res.status(401).send("Hatalı token bilgisi");
+  if (!authHeader) return res.status(401).send("Incorrect token information.");
 
   try {
     jwt.verify(authHeader, process.env.SECRET_KEY, (err, user) => {
