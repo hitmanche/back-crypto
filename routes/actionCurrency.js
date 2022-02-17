@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
       newAccount.value = newValue - notCommission;
 
       if (newValue < notCommission) {
-        res
+        return res
           .status(400)
           .send(
             `You don't have that many ${req.body.newCurrency} assets to buy.`
@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
     }
     if (req.body.type === "S") {
       if (oldValue < req.body.value) {
-        res
+        return res
           .status(400)
           .send(
             `You don't have that many ${req.body.oldCurrency} assets to sell.`
