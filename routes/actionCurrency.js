@@ -15,9 +15,9 @@ router.post("/", async (req, res) => {
   const { error } = actionCurrency.validate(req.body);
 
   if (error) {
-    res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   } else if (!req?.user) {
-    res.status(400).send("User information could not be found.");
+    return res.status(400).send("User information could not be found.");
   } else {
     const accountData = await UserAccount.find({ userEmail: req.user.email });
 
@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
       commission: commission,
     }).save();
 
-    res.json({});
+    return res.json({});
   }
 });
 

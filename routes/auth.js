@@ -21,11 +21,11 @@ router.post("/register", async (req, res) => {
   const { error } = registrationScheme.validate(req.body);
 
   if (error) {
-    res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   } else {
     const emailExist = await User.findOne({ email: req.body.email });
     if (emailExist) {
-      res.status(400).send("This e-mail address is used.");
+      return res.status(400).send("This e-mail address is used.");
     } else {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(req.body.password, salt);
@@ -44,10 +44,14 @@ router.post("/register", async (req, res) => {
         balance: 0,
       })
         .save()
-        .then(() => res.json("User created."))
-        .catch(() =>
-          res.status(400).send("An error occurred while creating the user.")
-        );
+        .then(() => {
+          return res.json("User created.");
+        })
+        .catch(() => {
+          return res
+            .status(400)
+            .send("An error occurred while creating the user.");
+        });
     }
   }
 });
@@ -57,11 +61,11 @@ router.post("/login", async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   const { error } = loginScheme.validate(req.body);
   if (!user) {
-    res.status(400).send("You entered an incorrect email or password.");
+    return res.status(400).send("You entered an incorrect email or password.");
   } else if (!validPassword) {
-    res.status(400).send("You entered an incorrect email or password.");
+    return res.status(400).send("You entered an incorrect email or password.");
   } else if (error) {
-    res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
   const expires = Number(process.env.TOKEN_EXPIRES);
@@ -71,7 +75,7 @@ router.post("/login", async (req, res) => {
 
   const userAccount = await UserAccount.find({ userEmail: req.body.email });
 
-  res.json({ expires, token, user, userAccount });
+  return res.json({ expires, token, user, userAccount });
 });
 
 module.exports = router;
