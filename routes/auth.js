@@ -36,22 +36,21 @@ router.post("/register", async (req, res) => {
         { userEmail: req.body.email, currency: "DASH", value: 0 },
         { userEmail: req.body.email, currency: "XRP", value: 4000 },
       ];
-      await UserAccount.insertMany(user_account);
-      new User({
-        fullName: req.body.fullName,
-        email: req.body.email,
-        password: hashPassword,
-        balance: 0,
-      })
-        .save()
-        .then(() => {
-          return res.json("User created.");
-        })
-        .catch(() => {
-          return res
-            .status(400)
-            .send("An error occurred while creating the user.");
-        });
+
+      try {
+        await UserAccount.insertMany(user_account);
+        await new User({
+          fullName: req.body.fullName,
+          email: req.body.email,
+          password: hashPassword,
+          balance: 0,
+        }).save();
+        return res.json("User created.");
+      } catch {
+        return res
+          .status(400)
+          .send("An error occurred while creating the user.");
+      }
     }
   }
 });
