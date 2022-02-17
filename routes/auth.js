@@ -57,7 +57,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  const validPassword = await bcrypt.compare(req.body.password, user?.password);
   const { error } = loginScheme.validate(req.body);
   if (!user) {
     return res.status(400).send("You entered an incorrect email or password.");
